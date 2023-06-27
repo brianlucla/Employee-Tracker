@@ -1,27 +1,28 @@
 const { Model, DataTypes } = require("sequelize");
 const sequelize = require("../config/connection");
 
-class Employees extends Model{}
+class Roles extends Model{}
 
-Employees.init(
+Roles.init(
   {
     id:{
       type:DataTypes.INTEGER,
       primaryKey:true,
       autoIncrement:true
     }
-    title:{
+    first_name:{
       type:"varchar(30)",
       allowNull:false
     }
-    salary:{
-      type:DataTypes.DECIMAL
+    last_name:{
+      type:"varchar(30)",
+      allowNull:false
     }
-    department_id:{
-      type:DataTypes.INTEGER,
-      // how to set foreign key here?
+    role_id:{
+      type:DataTypes.INTEGER
+    }
+    manager_id:{
+      type:DataTypes.INTEGER
     }
   }
-);
-
-module.exports=Employees;
+)
