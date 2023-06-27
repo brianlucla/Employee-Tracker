@@ -1,5 +1,6 @@
 const { Model, DataTypes } = require("sequelize");
 const sequelize = require("../config/connection");
+const Employees = require("./Roles");
 
 class Roles extends Model{}
 
@@ -25,4 +26,6 @@ Roles.init(
       type:DataTypes.INTEGER
     }
   }
-)
+);
+
+module.exports = Employees;
