@@ -13,6 +13,8 @@
   "dependencies": {
     "dotenv": "^16.3.1",
     "inquirer": "^8.2.4",
-    "mysql2": "^3.4.2"
+    "mysql2": "^3.4.2",
+    "sequelize": "^6.32.1",
+    "sequelizer": "^1.1.4"
   }
 }
