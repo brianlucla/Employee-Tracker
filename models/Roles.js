@@ -11,16 +11,29 @@ Employees.init(
       autoIncrement:true
     }
     title:{
-      type:"varchar(30)",
+      type:DataTypes.STRING(30),
       allowNull:false
     }
     salary:{
-      type:DataTypes.DECIMAL
+      type:DataTypes.DECIMAL,
+      allowNull:false
     }
     department_id:{
       type:DataTypes.INTEGER,
       // how to set foreign key here?
+      allowNull:false,
+      references:{
+        model:"department",
+        key:"id"
+      }
     }
+  }
+  {
+    sequelize,
+    timestamps:false,
+    freezeTableName:true,
+    underscored:true,
+    modelName:'role'
   }
 );
 

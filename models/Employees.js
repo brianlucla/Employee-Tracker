@@ -1,6 +1,7 @@
 const { Model, DataTypes } = require("sequelize");
 const sequelize = require("../config/connection");
 const Employees = require("./Roles");
+const Departments = require("./Department");
 
 class Roles extends Model{}
 
@@ -12,19 +13,35 @@ Roles.init(
       autoIncrement:true
     }
     first_name:{
-      type:"varchar(30)",
+      type:DataTypes.STRING(30),
       allowNull:false
     }
     last_name:{
-      type:"varchar(30)",
+      type:DataTypes.STRING(30),
       allowNull:false
     }
     role_id:{
-      type:DataTypes.INTEGER
+      type:DataTypes.INTEGER,
+      allowNull:false,
+      references:{
+        model:"role",
+        key:"id"
+      }
     }
     manager_id:{
-      type:DataTypes.INTEGER
+      type:DataTypes.INTEGER,
+      references:{
+        model: "employee",
+        key: "id"
+      }
     }
+  }
+  {
+    sequelize,
+    timestamps:false,
+    freezeTableName:true,
+    underscored:true,
+    modelName:'employee'
   }
 );
 

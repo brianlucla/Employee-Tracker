@@ -11,7 +11,7 @@ Departments.init(
       autoIncrement:true
     },
     name: {
-      type: "varchar(30)",
+      type: DataTypes.STRING(30),
       allowNull:false
     }
   }
@@ -20,7 +20,7 @@ Departments.init(
     timestamps:false,
     freezeTableName:true,
     underscored:true,
-    modelName:'departments'
+    modelName:'department'
   }
 );
 
