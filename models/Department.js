@@ -1,27 +1,27 @@
 const { Model, DataTypes } = require("sequelize");
 const sequelize = require("../config/connection");
 
-class Departments extends Model{}
+class Departments extends Model {}
 
 Departments.init(
   {
-    id:{
+    id: {
       type: DataTypes.INTEGER,
-      primaryKey:true,
-      autoIncrement:true
+      primaryKey: true,
+      autoIncrement: true,
     },
     name: {
       type: DataTypes.STRING(30),
-      allowNull:false
-    }
-  }
+      allowNull: false,
+    },
+  },
   {
-    sequelize, 
-    timestamps:false,
-    freezeTableName:true,
-    underscored:true,
-    modelName:'department'
+    sequelize,
+    timestamps: false,
+    freezeTableName: true,
+    underscored: true,
+    modelName: "department",
   }
 );
 
-module.exports=Departments;
+module.exports = Departments;

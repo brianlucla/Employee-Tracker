@@ -11,10 +11,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "console-table-printer": "^2.11.1",
+    "console.table": "^0.10.0",
     "dotenv": "^16.3.1",
     "inquirer": "^8.2.4",
     "mysql2": "^3.4.2",
-    "sequelize": "^6.32.1",
-    "sequelizer": "^1.1.4"
+    "sequelize": "^6.32.1"
   }
 }
