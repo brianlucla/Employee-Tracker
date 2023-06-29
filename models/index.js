@@ -2,6 +2,7 @@ const Department = require("./Department");
 const Role = require("./Roles");
 const Employee = require("./Employees");
 
+// creating foreign keys and connections
 Department.hasOne(Role, {
   foreignKey: "department_id",
   onDelete: "CASCADE",

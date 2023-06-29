@@ -1,3 +1,5 @@
+// creating and exporting the sequelize connection
+
 const Sequelize = require('sequelize');
 require("dotenv").config();
 

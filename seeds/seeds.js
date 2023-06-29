@@ -1,3 +1,5 @@
+// import seed info from the .json files
+
 const sequelize = require('../config/connection.js');
 
 const Departments  = require('../models/Department.js');

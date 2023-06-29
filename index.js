@@ -5,14 +5,17 @@ const { printTable } = require("console-table-printer");
 const { Sequelize } = require("sequelize");
 require("console.table");
 
+// promise function to connect to the database first and then run the inquirer prompts
 awaitSync().then(() => {
   userOptions();
 });
 
+// connects to database
 async function awaitSync() {
   const syncAwait = await sequelize.sync({ force: false });
 }
 
+// runs the main menu inquirer options
 async function userOptions() {
   const { methodsList } = await inquirer.prompt([
     {
@@ -32,7 +35,7 @@ async function userOptions() {
     },
   ]);
 
-  console.log("hi");
+  // switch statements to run corresponding functions on user input
   switch (methodsList) {
     case "View All Employees":
       return viewEmployees();
@@ -59,10 +62,12 @@ async function userOptions() {
   }
 }
 
+// creates the table for all employees with all necessary information except for department names
+// nesting the model within the includes didn't work for some reason
 async function viewEmployees() {
   const allEmployees = await Employee.findAll({
     raw: true,
-    include: { model: Role, attributes:{exclude:["id"]}},
+    include: [{ model: Role, attributes:[{exclude:["id"]}]}, {model:Employee, as: "manager", attributes:["first_name", "last_name"]}],
     attributes:{exclude:["role_id", "manager_id"],},
   });
   
@@ -70,12 +75,14 @@ async function viewEmployees() {
   userOptions();
 }
 
+// creates the table for all departments
 async function viewDepartments() {
   const departments = await Department.findAll({ raw: true });
   printTable(departments);
   userOptions();
 }
 
+// creates the table for viewing all roles and the necessary information
 async function viewRoles() {
   const allRoles = await Role.findAll({
     raw: true,
@@ -86,7 +93,9 @@ async function viewRoles() {
   userOptions();
 }
 
+// adds a department to the department table based on user input
 async function addDepartment(){
+  // taking in user input
   await inquirer.prompt([
     {
       type:"input",
@@ -94,7 +103,7 @@ async function addDepartment(){
       name: "depName"
     }
   ]).then((res)=>{
-    console.log(res.depName);
+    // then creating a department based on that input
     Department.create({
       name:res.depName
     });
@@ -103,7 +112,9 @@ async function addDepartment(){
   userOptions();
 }
 
+// adds a role to the role table based on user input
 async function addRole() {
+  // taking in user input
   const { roleName, salary, department } = await inquirer.prompt([
     {
       type: "input",
@@ -122,8 +133,10 @@ async function addRole() {
     },
   ]);
   
+  // extracting department ID from department table
   const departmentRow = await Department.findOne({ where: { name: department }, raw:true });
   const departmentID = departmentRow.id; 
+  // create role with user input
   Role.create({
         title: roleName,
         salary:salary,
@@ -133,7 +146,9 @@ async function addRole() {
   userOptions();
 }
 
+// adds an employee to the employee table based on user input
 async function addEmployee() {
+  // taking in user input
   const { firstName, lastName, role, manager } = await inquirer.prompt([
     {
       type: "input",
@@ -156,15 +171,16 @@ async function addEmployee() {
       name: "manager",
     },
   ]);
-  console.log(firstName, lastName, role, manager);
+  
+  // find role id from table of rows by searching with title 
   const roleRow = await Role.findOne({
     where: { title: role },
     raw: true,
   });
-  console.log(roleRow);
+  
   const roleID = roleRow.id;
-  console.log(roleID);
 
+  // finding manager id from manager name
   const managerFirst = manager.split(" ")[0];
   const managerLast = manager.split(" ")[1];
   const managerRow = await Employee.findOne({
@@ -173,6 +189,7 @@ async function addEmployee() {
   });
   const managerID = managerRow.id;
   
+  // create employee with user input
   Employee.create({
     first_name: firstName,
     last_name: lastName,
@@ -183,11 +200,13 @@ async function addEmployee() {
   userOptions();
 }
 
+// updates an employee based on user input
 async function updateEmployee(){
+  // create arrays of employees and roles to be manipulated for use in inquirer
   const employeeArray = await Employee.findAll({ raw: true , attributes:{exclude:["id","role_id", "manager_id"]}});
   const roleArray= await Role.findAll({raw:true, attributes:{exclude:["id","salary", "department_id"]}});
-  console.log(roleArray);
   
+  // extract first and last names, concatenate them, and push them into a new array
   const employeeFirst = [];
   const employeeLast = [];
   for (let i = 0; i < employeeArray.length; i++){
@@ -200,11 +219,13 @@ async function updateEmployee(){
     employeeNames.push(employeeFirst[i] + " " + employeeLast[i]);
   }
 
+  // create an array of roles
   roleNames = [];
   for (let i = 0; i < roleArray.length; i++){
     roleNames.push(roleArray[i].title);
   }
 
+  // take user input
   const {employee, role} = await inquirer.prompt([
     {
       type:"list",
@@ -220,15 +241,17 @@ async function updateEmployee(){
     }
   ]);
 
+  // extract employee name from user input
   const first = employee.split(" ")[0];
   const last = employee.split(" ")[1];
 
+  // find role id by searching the role table
   const roleIDObj = await Role.findOne({raw:true, where:{title:role}, attributes:{exclude:["title","salary","department_id"]}});
-  console.log(roleIDObj);
+  
 
   const roleID = roleIDObj.id;
-  console.log(roleID);
-
+  
+  // update employee to have the updated role
   const updatedEmployee = await Employee.update(
     {role_id:roleID},
     {where:{first_name:first, last_name: last}}

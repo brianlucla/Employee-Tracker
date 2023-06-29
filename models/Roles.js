@@ -3,6 +3,7 @@ const sequelize = require("../config/connection");
 
 class Roles extends Model {}
 
+// creating the models with all the required fields
 Roles.init(
   {
     id: {

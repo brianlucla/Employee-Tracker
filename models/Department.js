@@ -3,6 +3,7 @@ const sequelize = require("../config/connection");
 
 class Departments extends Model {}
 
+// creating the model with the required fields
 Departments.init(
   {
     id: {
