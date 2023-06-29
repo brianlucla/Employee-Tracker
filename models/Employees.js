@@ -29,10 +29,6 @@ Employees.init(
     },
     manager_id: {
       type: DataTypes.INTEGER,
-      references:{
-        model:"employee",
-        key:"id"
-      }
     },
   },
   {

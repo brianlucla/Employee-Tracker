@@ -2,6 +2,7 @@ const inquirer = require("inquirer");
 const sequelize = require("./config/connection");
 const { Department, Role, Employee } = require("./models");
 const { printTable } = require("console-table-printer");
+const { Sequelize } = require("sequelize");
 require("console.table");
 
 awaitSync().then(() => {
@@ -40,7 +41,7 @@ async function userOptions() {
       return addEmployee();
 
     case "Update Employee Role":
-
+      return updateEmployee();
     case "View All Roles":
       return viewRoles();
 
@@ -61,8 +62,10 @@ async function userOptions() {
 async function viewEmployees() {
   const allEmployees = await Employee.findAll({
     raw: true,
-    include: { model: Role, model:Employee},
+    include: { model: Role, attributes:{exclude:["id"]}},
+    attributes:{exclude:["role_id", "manager_id"],},
   });
+  
   printTable(allEmployees);
   userOptions();
 }
@@ -76,8 +79,8 @@ async function viewDepartments() {
 async function viewRoles() {
   const allRoles = await Role.findAll({
     raw: true,
-    include: { model: Department },
-    attributes: { exclude: ["department.id", "department_id"] },
+    include: { model: Department, attributes:{exclude:["id"]}},
+    attributes: { exclude: ["department_id"] },
   });
   printTable(allRoles);
   userOptions();
@@ -177,5 +180,59 @@ async function addEmployee() {
     manager_id: managerID
   });
 
+  userOptions();
+}
+
+async function updateEmployee(){
+  const employeeArray = await Employee.findAll({ raw: true , attributes:{exclude:["id","role_id", "manager_id"]}});
+  const roleArray= await Role.findAll({raw:true, attributes:{exclude:["id","salary", "department_id"]}});
+  console.log(roleArray);
+  
+  const employeeFirst = [];
+  const employeeLast = [];
+  for (let i = 0; i < employeeArray.length; i++){
+    employeeFirst.push(employeeArray[i].first_name);
+    employeeLast.push(employeeArray[i].last_name);
+  }
+
+  employeeNames = [];
+  for(let i = 0; i < employeeArray.length; i++){
+    employeeNames.push(employeeFirst[i] + " " + employeeLast[i]);
+  }
+
+  roleNames = [];
+  for (let i = 0; i < roleArray.length; i++){
+    roleNames.push(roleArray[i].title);
+  }
+
+  const {employee, role} = await inquirer.prompt([
+    {
+      type:"list",
+      message:"Please select the employee's name",
+      name:"employee",
+      choices:employeeNames
+    },
+    {
+      type:"list",
+      message:"Please select the employee's updated role",
+      name:"role",
+      choices: roleNames
+    }
+  ]);
+
+  const first = employee.split(" ")[0];
+  const last = employee.split(" ")[1];
+
+  const roleIDObj = await Role.findOne({raw:true, where:{title:role}, attributes:{exclude:["title","salary","department_id"]}});
+  console.log(roleIDObj);
+
+  const roleID = roleIDObj.id;
+  console.log(roleID);
+
+  const updatedEmployee = await Employee.update(
+    {role_id:roleID},
+    {where:{first_name:first, last_name: last}}
+  );
+  
   userOptions();
 }

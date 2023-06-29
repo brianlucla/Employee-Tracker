@@ -20,14 +20,10 @@ Employee.belongsTo(Role, {
   foreignKey: "role_id",
 });
 
-Employee.hasOne(Employee, {
-  as:"parent",
-  foreignKey: "manager_id",
+Employee.belongsTo(Employee,{
+  foreignKey:"manager_id",
+  as: "manager"
 });
 
-Employee.belongsTo(Employee, {
-  as:"child",
-  foreignKey:"manager_id",
-});
 
 module.exports = { Department, Role, Employee };
