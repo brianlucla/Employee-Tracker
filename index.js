@@ -58,7 +58,7 @@ async function userOptions() {
       return addDepartment();
 
     case "Quit":
-      return;
+      process.exit();
   }
 }
 
