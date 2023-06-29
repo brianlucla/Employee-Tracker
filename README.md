@@ -7,7 +7,7 @@ This project creates a command line interface for companies to view and update d
 
 ## Installation
 
-To run this project, the user must run "npm i" in command line to install the required packages. After running this, they will have to run "node index.js" to start the program.
+To run this project, the user must run "npm i" in command line to install the required packages. Then, run "node seeds/seeds.js" to properly fill in the tables. After running this, they will have to run "node index.js" to start the program.
 
 ## Usage
 

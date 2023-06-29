@@ -67,7 +67,7 @@ async function userOptions() {
 async function viewEmployees() {
   const allEmployees = await Employee.findAll({
     raw: true,
-    include: [{ model: Role, attributes:[{exclude:["id"]}]}, {model:Employee, as: "manager", attributes:["first_name", "last_name"]}],
+    include: [{ model: Role, attributes:{exclude:["id"]}}, {model:Employee, as: "manager", attributes:["first_name", "last_name"]}],
     attributes:{exclude:["role_id", "manager_id"],},
   });
   
